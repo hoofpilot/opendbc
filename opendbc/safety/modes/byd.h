@@ -110,7 +110,7 @@ static bool byd_tx_hook(const CANPacket_t *to_send) {
 
 static safety_config byd_init(uint16_t param) {
 
-  UNUSED(param);
+  SAFETY_UNUSED(param);
 #ifdef ALLOW_DEBUG
   const int BYD_FLAG_LONGITUDINAL_CONTROL = 1;
   byd_longitudinal = GET_FLAG(param, BYD_FLAG_LONGITUDINAL_CONTROL);
