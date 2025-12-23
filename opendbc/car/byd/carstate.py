@@ -102,6 +102,7 @@ class CarState(CarStateBase):
       ret.rightBlindspot = bool(cp.vl["BSM"]["RIGHT_APPROACH"])
 
     return ret, ret_sp
+
   @staticmethod
   def get_can_parsers(CP, CP_SP):
     pt_signals = [
