@@ -162,12 +162,14 @@
     ],
     "package": "All"
   },
-  "BYD Sealion 2024+": {
+  "BYD Sealion 2024": {
     "platform": "BYD_SEALION",
     "make": "BYD",
     "brand": "byd",
-    "model": "Sealion 2024+",
-    "year": [],
+    "model": "Sealion",
+    "year": [
+      "2024"
+    ],
     "package": "All"
   },
   "Cadillac Escalade 2017": {

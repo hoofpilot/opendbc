@@ -58,8 +58,8 @@ class CarState(CarStateBase):
     ret.seatbeltUnlatched = cp.vl["METER_CLUSTER"]["SEATBELT_DRIVER"] == 0
 
     # gas pedal
-    ret.gas = cp.vl["PEDAL"]["GAS_PEDAL"]
-    ret.gasPressed = ret.gas >= 0.01
+    gas_pedal = cp.vl["PEDAL"]["GAS_PEDAL"]
+    ret.gasPressed = gas_pedal >= 0.01
 
     # brake pedal
     ret.brake = cp.vl["PEDAL"]["BRAKE_PEDAL"]
