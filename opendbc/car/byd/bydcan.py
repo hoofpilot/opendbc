@@ -90,9 +90,6 @@ def send_buttons(packer, state):
   }
   return packer.make_can_msg("PCM_BUTTONS", 0, values)
 
-
-
-
 def byd_checksum(address: int, sig, d: bytearray) -> int:
   byte_key = 0xAF
 
