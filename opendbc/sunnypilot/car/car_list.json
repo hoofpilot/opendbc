@@ -150,6 +150,26 @@
     ],
     "package": "Driver Confidence Package 2"
   },
+  "BYD ATTO 3 2022-24": {
+    "platform": "BYD_ATTO3",
+    "make": "BYD",
+    "brand": "byd",
+    "model": "ATTO 3",
+    "year": [
+      "2022",
+      "2023",
+      "2024"
+    ],
+    "package": "All"
+  },
+  "BYD Sealion 2024+": {
+    "platform": "BYD_SEALION",
+    "make": "BYD",
+    "brand": "byd",
+    "model": "Sealion 2024+",
+    "year": [],
+    "package": "All"
+  },
   "Cadillac Escalade 2017": {
     "platform": "CADILLAC_ESCALADE",
     "make": "Cadillac",
