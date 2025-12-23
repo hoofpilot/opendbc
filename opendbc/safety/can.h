@@ -22,3 +22,4 @@ typedef struct {
 #define GET_BUS(msg) ((msg)->bus)
 #define GET_LEN(msg) (dlc_to_len[(msg)->data_len_code])
 #define GET_ADDR(msg) ((msg)->addr)
+#define GET_BYTE(msg, b) ((msg)->data[(b)])
