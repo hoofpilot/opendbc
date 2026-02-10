@@ -9,11 +9,9 @@ Ecu = CarParams.Ecu
 
 class CANBUS:
   main_bus = 0
-  radar_bus = 1
-  cam_bus = 2
 
-def dbc_dict(pt, radar):
-  return {Bus.pt: pt, Bus.radar: radar}
+def dbc_dict(pt):
+  return {Bus.pt: pt}
 
 class BydSafetyFlags(IntFlag):
   LONG_CONTROL = 1
@@ -25,17 +23,11 @@ class BydCarDocs(CarDocs):
 
 @dataclass
 class BYDPlatformConfig(PlatformConfig):
-  dbc_dict: DbcDict = field(default_factory=lambda: dbc_dict('byd_general_pt', 'byd_radar_fd'))
+  dbc_dict: DbcDict = field(default_factory=lambda: dbc_dict('byd_sealion7'))
 
 class CAR(Platforms):
-  BYD_ATTO3 = BYDPlatformConfig(
-    [BydCarDocs("BYD ATTO 3 2022-24")],
-    CarSpecs(mass=2090., wheelbase=2.72, steerRatio=16.0, centerToFrontRatio=0.44)
-  )
-
-  # Specs are provisional until confirmed with measurements.
   BYD_SEALION = BYDPlatformConfig(
-    [BydCarDocs("BYD Sealion 2024")],
+    [BydCarDocs("BYD Sealion 7 2024")],
     CarSpecs(mass=2090., wheelbase=2.72, steerRatio=16.0, centerToFrontRatio=0.44)
   )
 

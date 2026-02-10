@@ -13,32 +13,17 @@ class CarState(CarStateBase):
     super().__init__(CP, CP_SP)
     can_define = CANDefine(DBC[CP.carFingerprint][Bus.pt])
 
-    self.shifter_values = can_define.dv["DRIVE_STATE"]["GEAR"]
-    self.set_distance_values = can_define.dv["ACC_HUD_ADAS"]["SET_DISTANCE"]
-
-    self.prev_angle = 0
-    self.hud_passthrough = 0
-    self.adas_settings_pt = 0
-    self.lka_on = 0
-    self.eps_ok = 0
+    self.shifter_values = can_define.dv["GEAR_STATE"]["GEAR_STATE"]
 
   def update(self, can_parsers) -> tuple[structs.CarState, structs.CarStateSP]:
     cp = can_parsers[Bus.pt]
-    cp_cam = can_parsers[Bus.cam]
     ret = structs.CarState()
     ret_sp = structs.CarStateSP()
 
-    self.adas_settings_pt = cp_cam.vl["LKAS_HUD_ADAS"]["SETTINGS"]
-    self.hud_passthrough = cp_cam.vl["LKAS_HUD_ADAS"]["TSR"]
-    self.lka_on = cp_cam.vl["LKAS_HUD_ADAS"]["LKAS_ENABLED"]
-
-    self.eps_ok = cp_cam.vl["STEERING_MODULE_ADAS"]["EPS_OK"]
-    ret.steerFaultTemporary = not bool(self.eps_ok)
-
-    ret.wheelSpeeds.fl = cp.vl["WHEEL_SPEED"]["WHEELSPEED_FL"] * CV.KPH_TO_MS
-    ret.wheelSpeeds.fr = cp.vl["WHEEL_SPEED"]["WHEELSPEED_FR"] * CV.KPH_TO_MS
-    ret.wheelSpeeds.rl = cp.vl["WHEEL_SPEED"]["WHEELSPEED_BL"] * CV.KPH_TO_MS
-    ret.wheelSpeeds.rr = cp.vl["WHEEL_SPEED"]["WHEELSPEED_BR"] * CV.KPH_TO_MS
+    ret.wheelSpeeds.fl = cp.vl["WHEEL_SPEEDS"]["WHEEL_FL"] * CV.KPH_TO_MS
+    ret.wheelSpeeds.fr = cp.vl["WHEEL_SPEEDS"]["WHEEL_FR"] * CV.KPH_TO_MS
+    ret.wheelSpeeds.rl = cp.vl["WHEEL_SPEEDS"]["WHEEL_RL"] * CV.KPH_TO_MS
+    ret.wheelSpeeds.rr = cp.vl["WHEEL_SPEEDS"]["WHEEL_RR"] * CV.KPH_TO_MS
     ret.vEgoRaw = (ret.wheelSpeeds.rl + ret.wheelSpeeds.fl) / 2.0
 
     # unfiltered speed from CAN sensors
@@ -47,84 +32,61 @@ class CarState(CarStateBase):
     ret.standstill = ret.vEgoRaw < 0.01
 
     # safety checks to engage
-    can_gear = int(cp.vl["DRIVE_STATE"]["GEAR"])
+    can_gear = int(cp.vl["GEAR_STATE"]["GEAR_STATE"])
     ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(can_gear, None))
 
-    ret.doorOpen = any([cp.vl["METER_CLUSTER"]["BACK_LEFT_DOOR"],
-                       cp.vl["METER_CLUSTER"]["FRONT_LEFT_DOOR"],
-                       cp.vl["METER_CLUSTER"]["BACK_RIGHT_DOOR"],
-                       cp.vl["METER_CLUSTER"]["FRONT_RIGHT_DOOR"]])
+    ret.doorOpen = any([cp.vl["SEATBELT"]["DOOR_RL_OPEN"],
+                       cp.vl["SEATBELT"]["DOOR_FL_OPEN"],
+                       cp.vl["SEATBELT"]["DOOR_RR_OPEN"],
+                       cp.vl["SEATBELT"]["DOOR_FR_OPEN"]])
 
-    ret.seatbeltUnlatched = cp.vl["METER_CLUSTER"]["SEATBELT_DRIVER"] == 0
+    ret.seatbeltUnlatched = cp.vl["SEATBELT"]["SEATBELT_DRIVER_LATCHED"] == 0
 
-    # gas pedal
-    gas_pedal = cp.vl["PEDAL"]["GAS_PEDAL"]
-    ret.gasPressed = gas_pedal >= 0.01
+    # Gas position isn't in this DBC snapshot.
+    ret.gasPressed = False
 
-    # brake pedal
-    ret.brake = cp.vl["PEDAL"]["BRAKE_PEDAL"]
-    ret.brakePressed = ret.brake > 0.01
+    ret.brakePressed = bool(cp.vl["BRAKE"]["BRAKE_PRESSED"])
+    ret.brake = 1.0 if ret.brakePressed else 0.0
 
     # steer
-    ret.steeringAngleDeg = cp.vl["STEER_MODULE_2"]["STEER_ANGLE_2"]
-    self.prev_angle = ret.steeringAngleDeg
-    ret.steeringTorque = cp.vl["STEERING_TORQUE"]["MAIN_TORQUE"]
-    ret.steeringTorqueEps = cp.vl["STEER_MODULE_2"]["DRIVER_EPS_TORQUE"]
+    ret.steeringAngleDeg = cp.vl["STEER_ANGLE_SENSOR"]["STEER_RACK_ANGLE"]
+    ret.steeringTorque = cp.vl["STEER_ANGLE_SENSOR"]["STEER_TORQUE_MAG"]
+    ret.steeringTorqueEps = ret.steeringTorque
     ret.steeringPressed = bool(ret.steeringTorqueEps > 6)
+    ret.steerFaultTemporary = False
 
-    # TODO: get the real value
     ret.stockAeb = False
     ret.stockFcw = False
-    ret.cruiseState.available = bool(cp_cam.vl["ACC_HUD_ADAS"]["ACC_ON1"]) or bool(cp_cam.vl["ACC_HUD_ADAS"]["ACC_ON2"])
+    ret.cruiseState.available = bool(cp.vl["ICC_STATE"]["ICC_ON"])
+    ret.cruiseState.enabled = ret.cruiseState.available
 
-    # byd speedCluster will follow wheelspeed if cruiseState is not available
-    if ret.cruiseState.available:
-      ret.cruiseState.speedCluster = max(int(cp_cam.vl["ACC_HUD_ADAS"]["SET_SPEED"]), 30) * CV.KPH_TO_MS
-    else:
-      ret.cruiseState.speedCluster = 0
-
-    ret.cruiseState.speed = ret.cruiseState.speedCluster / HUD_MULTIPLIER
-    ret.cruiseState.standstill = bool(cp_cam.vl["ACC_CMD"]["STANDSTILL_STATE"])
+    ret.cruiseState.speedCluster = 0
+    ret.cruiseState.speed = 0
+    ret.cruiseState.standstill = ret.standstill
     ret.cruiseState.nonAdaptive = False
 
-    ret.cruiseState.enabled = not bool(cp_cam.vl["ACC_CMD"]["CMD_REQ_ACTIVE_LOW"])
-
-    # button presses
-    ret.leftBlinker = bool(cp.vl["STALKS"]["LEFT_BLINKER"])
-    ret.rightBlinker = bool(cp.vl["STALKS"]["RIGHT_BLINKER"])
-    ret.genericToggle = bool(cp.vl["STALKS"]["GENERIC_TOGGLE"])
+    ret.leftBlinker = bool(cp.vl["LIGHTS"]["LEFT_TURN"])
+    ret.rightBlinker = bool(cp.vl["LIGHTS"]["RIGHT_TURN"])
+    ret.genericToggle = False
     ret.espDisabled = False
 
-    # blindspot sensors
-    if self.CP.enableBsm:
-      # used for lane change so its okay for the chime to work on both side.
-      ret.leftBlindspot = bool(cp.vl["BSM"]["LEFT_APPROACH"])
-      ret.rightBlindspot = bool(cp.vl["BSM"]["RIGHT_APPROACH"])
+    ret.leftBlindspot = False
+    ret.rightBlindspot = False
 
     return ret, ret_sp
 
   @staticmethod
   def get_can_parsers(CP, CP_SP):
     pt_signals = [
-      ("DRIVE_STATE", 50),
-      ("WHEEL_SPEED", 50),
-      ("PEDAL", 50),
-      ("METER_CLUSTER", 20),
-      ("STEER_MODULE_2", 100),
-      ("STEERING_TORQUE", 50),
-      ("STALKS", 20),
-      ("BSM", 20),
-      ("PCM_BUTTONS", 20),
-    ]
-
-    cam_signals = [
-      ("ACC_HUD_ADAS", 50),
-      ("ACC_CMD", 50),
-      ("LKAS_HUD_ADAS", 50),
-      ("STEERING_MODULE_ADAS", 50),
+      ("WHEEL_SPEEDS", 50),
+      ("BRAKE", 50),
+      ("SEATBELT", 20),
+      ("STEER_ANGLE_SENSOR", 100),
+      ("ICC_STATE", 20),
+      ("GEAR_STATE", 20),
+      ("LIGHTS", 20),
     ]
 
     return {
       Bus.pt: CANParser(DBC[CP.carFingerprint][Bus.pt], pt_signals, CANBUS.main_bus),
-      Bus.cam: CANParser(DBC[CP.carFingerprint][Bus.pt], cam_signals, CANBUS.cam_bus),
     }
