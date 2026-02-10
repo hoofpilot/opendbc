@@ -1,5 +1,8 @@
+from opendbc.can import CANPacker
+from opendbc.car import Bus
 from opendbc.car.lateral import apply_std_steer_angle_limits, AngleSteeringLimits
 from opendbc.car.interfaces import CarControllerBase
+from opendbc.car.byd.bydcan import create_can_steer_command, create_lkas_hud, create_accel_command
 
 
 class CarControllerParams:
@@ -13,7 +16,11 @@ class CarControllerParams:
 class CarController(CarControllerBase):
   def __init__(self, dbc_names, CP, CP_SP):
     super().__init__(dbc_names, CP, CP_SP)
+    self.packer = CANPacker(dbc_names.get(Bus.cam, dbc_names[Bus.pt]))
     self.apply_angle = 0
+    self.steer_cnt = 0
+    self.hud_cnt = 0
+    self.accel_cnt = 0
 
   def update(self, CC, CC_SP, CS, now_nanos):
     can_sends = []
@@ -22,6 +29,17 @@ class CarController(CarControllerBase):
     if (self.frame % 2) == 0:
       self.apply_angle = apply_std_steer_angle_limits(actuators.steeringAngleDeg, self.apply_angle,
       CS.out.vEgo, CS.out.steeringAngleDeg, CC.latActive, CarControllerParams.ANGLE_LIMITS)
+      self.steer_cnt = (self.steer_cnt + 1) & 0xF
+      self.hud_cnt = (self.hud_cnt + 1) & 0xF
+      self.accel_cnt = (self.accel_cnt + 1) & 0xF
+
+      can_sends.append(create_can_steer_command(self.packer, self.apply_angle, CC.latActive, CS.out.standstill, self.steer_cnt))
+      can_sends.append(create_lkas_hud(self.packer, CS.hud_passthrough, CS.adas_settings_pt, CC.enabled, CS.lka_on, self.hud_cnt))
+
+      if self.CP.openpilotLongitudinalControl:
+        long_active = CC.longActive and not CS.out.gasPressed
+        brake_hold = CS.out.standstill and actuators.accel < 0
+        can_sends.append(create_accel_command(self.packer, actuators.accel, long_active, brake_hold, self.accel_cnt))
 
     new_actuators = actuators.as_builder()
     new_actuators.steeringAngleDeg = self.apply_angle
