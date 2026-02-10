@@ -23,7 +23,7 @@ class BydCarDocs(CarDocs):
 
 @dataclass
 class BYDPlatformConfig(PlatformConfig):
-  dbc_dict: DbcDict = field(default_factory=lambda: dbc_dict('byd_sealion7'))
+  dbc_dict: DbcDict = field(default_factory=lambda: dbc_dict('BYD_SEALION7'))
 
 class CAR(Platforms):
   BYD_SEALION = BYDPlatformConfig(
@@ -41,3 +41,4 @@ FW_QUERY_CONFIG = FwQueryConfig(
 )
 
 DBC = CAR.create_dbc_map()
+
