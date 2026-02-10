@@ -27,7 +27,7 @@ class BYDPlatformConfig(PlatformConfig):
 
 class CAR(Platforms):
   BYD_SEALION = BYDPlatformConfig(
-    [BydCarDocs("BYD Sealion 7 2024")],
+    [BydCarDocs("BYD Sealion 2024")],
     CarSpecs(mass=2090., wheelbase=2.72, steerRatio=16.0, centerToFrontRatio=0.44)
   )
 
