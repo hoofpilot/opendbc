@@ -46,10 +46,11 @@ class CarState(CarStateBase):
     ret.gasPressed = False
 
     ret.brakePressed = bool(cp.vl["BRAKE"]["BRAKE_PRESSED"])
-    ret.brake = 1.0 if ret.brakePressed else 0.0
+    ret.brake = cp.vl["NEW_MSG_D5"]["BRAKE_POSITION"] / 4095.0
 
     # steer
     ret.steeringAngleDeg = cp.vl["STEER_ANGLE_SENSOR"]["STEER_RACK_ANGLE"]
+    ret.steeringAngleOffsetDeg = cp.vl["NEW_MSG_1E2"]["STEER_ANGLE_2"] - ret.steeringAngleDeg
     ret.steeringTorque = cp.vl["STEER_ANGLE_SENSOR"]["STEER_TORQUE_MAG"]
     ret.steeringTorqueEps = ret.steeringTorque
     ret.steeringPressed = bool(ret.steeringTorqueEps > 6)
@@ -57,7 +58,7 @@ class CarState(CarStateBase):
 
     ret.stockAeb = False
     ret.stockFcw = False
-    ret.cruiseState.available = bool(cp.vl["ICC_STATE"]["ICC_ON"])
+    ret.cruiseState.available = bool(cp.vl["ICC_STATE"]["ICC_ON"]) or bool(cp.vl["ICC_STATE"]["ACC_ON"])
     ret.cruiseState.enabled = ret.cruiseState.available
 
     ret.cruiseState.speedCluster = 0
@@ -67,7 +68,7 @@ class CarState(CarStateBase):
 
     ret.leftBlinker = bool(cp.vl["LIGHTS"]["LEFT_TURN"])
     ret.rightBlinker = bool(cp.vl["LIGHTS"]["RIGHT_TURN"])
-    ret.genericToggle = False
+    ret.genericToggle = bool(cp.vl["LIGHTS"]["BRIGHTS"])
     ret.espDisabled = False
 
     ret.leftBlindspot = False
@@ -78,6 +79,8 @@ class CarState(CarStateBase):
   @staticmethod
   def get_can_parsers(CP, CP_SP):
     pt_signals = [
+      ("NEW_MSG_D5", 50),
+      ("NEW_MSG_1E2", 50),
       ("WHEEL_SPEEDS", 50),
       ("BRAKE", 50),
       ("SEATBELT", 20),
