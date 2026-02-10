@@ -46,7 +46,7 @@ class CarState(CarStateBase):
     ret.gasPressed = False
 
     ret.brakePressed = bool(cp.vl["BRAKE"]["BRAKE_PRESSED"])
-    ret.brake = cp.vl["NEW_MSG_D5"]["BRAKE_POSITION"] / 4095.0
+    ret.brake = cp.vl["BRAKE_POSITION"]["BRAKE_POSITION"] / 4095.0
 
     # steer
     ret.steeringAngleDeg = cp.vl["STEER_ANGLE_SENSOR"]["STEER_RACK_ANGLE"]
@@ -79,7 +79,7 @@ class CarState(CarStateBase):
   @staticmethod
   def get_can_parsers(CP, CP_SP):
     pt_signals = [
-      ("NEW_MSG_D5", 50),
+      ("BRAKE_POSITION", 50),
       ("NEW_MSG_1E2", 50),
       ("WHEEL_SPEEDS", 50),
       ("BRAKE", 50),
