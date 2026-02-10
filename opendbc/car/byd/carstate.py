@@ -14,21 +14,11 @@ class CarState(CarStateBase):
     can_define = CANDefine(DBC[CP.carFingerprint][Bus.pt])
 
     self.shifter_values = can_define.dv["GEAR_STATE"]["GEAR_STATE"]
-    self.hud_passthrough = 0
-    self.adas_settings_pt = 0
-    self.lka_on = 0
-    self.eps_ok = 0
 
   def update(self, can_parsers) -> tuple[structs.CarState, structs.CarStateSP]:
     cp = can_parsers[Bus.pt]
-    cp_cam = can_parsers[Bus.cam]
     ret = structs.CarState()
     ret_sp = structs.CarStateSP()
-
-    self.adas_settings_pt = cp_cam.vl["LKAS_HUD_ADAS"]["SETTINGS"]
-    self.hud_passthrough = cp_cam.vl["LKAS_HUD_ADAS"]["TSR"]
-    self.lka_on = cp_cam.vl["LKAS_HUD_ADAS"]["LKAS_ENABLED"]
-    self.eps_ok = cp_cam.vl["STEERING_MODULE_ADAS"]["EPS_OK"]
 
     ret.wheelSpeeds.fl = cp.vl["WHEEL_SPEEDS"]["WHEEL_FL"] * CV.KPH_TO_MS
     ret.wheelSpeeds.fr = cp.vl["WHEEL_SPEEDS"]["WHEEL_FR"] * CV.KPH_TO_MS
@@ -63,19 +53,17 @@ class CarState(CarStateBase):
     ret.steeringTorque = cp.vl["STEER_ANGLE_SENSOR"]["STEER_TORQUE_MAG"]
     ret.steeringTorqueEps = ret.steeringTorque
     ret.steeringPressed = bool(ret.steeringTorqueEps > 6)
-    ret.steerFaultTemporary = not bool(self.eps_ok)
+    ret.steerFaultTemporary = False
 
     ret.stockAeb = False
     ret.stockFcw = False
-    ret.cruiseState.available = bool(cp_cam.vl["ACC_HUD_ADAS"]["ACC_ON1"]) or bool(cp_cam.vl["ACC_HUD_ADAS"]["ACC_ON2"])
-    if ret.cruiseState.available:
-      ret.cruiseState.speedCluster = max(int(cp_cam.vl["ACC_HUD_ADAS"]["SET_SPEED"]), 30) * CV.KPH_TO_MS
-    else:
-      ret.cruiseState.speedCluster = 0
-    ret.cruiseState.speed = ret.cruiseState.speedCluster / HUD_MULTIPLIER
-    ret.cruiseState.standstill = bool(cp_cam.vl["ACC_CMD"]["STANDSTILL_STATE"])
+    ret.cruiseState.available = bool(cp.vl["ICC_STATE"]["ICC_ON"])
+    ret.cruiseState.enabled = ret.cruiseState.available
+
+    ret.cruiseState.speedCluster = 0
+    ret.cruiseState.speed = 0
+    ret.cruiseState.standstill = ret.standstill
     ret.cruiseState.nonAdaptive = False
-    ret.cruiseState.enabled = not bool(cp_cam.vl["ACC_CMD"]["CMD_REQ_ACTIVE_LOW"])
 
     ret.leftBlinker = bool(cp.vl["LIGHTS"]["LEFT_TURN"])
     ret.rightBlinker = bool(cp.vl["LIGHTS"]["RIGHT_TURN"])
@@ -94,18 +82,11 @@ class CarState(CarStateBase):
       ("BRAKE", 50),
       ("SEATBELT", 20),
       ("STEER_ANGLE_SENSOR", 100),
+      ("ICC_STATE", 20),
       ("GEAR_STATE", 20),
       ("LIGHTS", 20),
     ]
 
-    cam_signals = [
-      ("ACC_HUD_ADAS", 50),
-      ("ACC_CMD", 50),
-      ("LKAS_HUD_ADAS", 50),
-      ("STEERING_MODULE_ADAS", 50),
-    ]
-
     return {
       Bus.pt: CANParser(DBC[CP.carFingerprint][Bus.pt], pt_signals, CANBUS.main_bus),
-      Bus.cam: CANParser(DBC[CP.carFingerprint][Bus.cam], cam_signals, CANBUS.cam_bus),
     }

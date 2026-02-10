@@ -9,11 +9,9 @@ Ecu = CarParams.Ecu
 
 class CANBUS:
   main_bus = 0
-  radar_bus = 1
-  cam_bus = 2
 
-def dbc_dict(pt, radar, cam):
-  return {Bus.pt: pt, Bus.radar: radar, Bus.cam: cam}
+def dbc_dict(pt):
+  return {Bus.pt: pt}
 
 class BydSafetyFlags(IntFlag):
   LONG_CONTROL = 1
@@ -25,7 +23,7 @@ class BydCarDocs(CarDocs):
 
 @dataclass
 class BYDPlatformConfig(PlatformConfig):
-  dbc_dict: DbcDict = field(default_factory=lambda: dbc_dict('byd_sealion7', 'byd_radar_fd', 'byd_general_pt'))
+  dbc_dict: DbcDict = field(default_factory=lambda: dbc_dict('byd_sealion7'))
 
 class CAR(Platforms):
   BYD_SEALION = BYDPlatformConfig(
