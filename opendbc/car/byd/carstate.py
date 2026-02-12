@@ -42,24 +42,26 @@ class CarState(CarStateBase):
 
     ret.seatbeltUnlatched = cp.vl["SEATBELT"]["SEATBELT_DRIVER_LATCHED"] == 0
 
-    # Gas position isn't in this DBC snapshot.
-    ret.gasPressed = False
+    ret.gas = cp.vl["PEDALS"]["GAS_PEDAL"] / 127.0
+    ret.gasPressed = ret.gas > 1e-3
 
-    ret.brakePressed = bool(cp.vl["BRAKE"]["BRAKE_PRESSED"])
-    ret.brake = cp.vl["BRAKE_POSITION"]["BRAKE_POSITION"] / 4095.0
+    ret.brakePressed = bool(cp.vl["BRAKE"]["BRAKE_PRESSED"]) or bool(cp.vl["PEDALS"]["BRAKE_PRESSED"])
+    ret.brake = max(cp.vl["BRAKE_POSITION"]["BRAKE_POSITION"] / 511.0, 1.0 if ret.brakePressed else 0.0)
+    ret.brakeLights = bool(cp.vl["LIGHTS"]["BRAKE_LIGHT"])
 
     # steer
     ret.steeringAngleDeg = cp.vl["STEER_ANGLE_SENSOR"]["STEER_RACK_ANGLE"]
     ret.steeringAngleOffsetDeg = cp.vl["NEW_MSG_1E2"]["STEER_ANGLE_2"] - ret.steeringAngleDeg
     ret.steeringTorque = cp.vl["STEER_ANGLE_SENSOR"]["STEER_TORQUE_MAG"]
-    ret.steeringTorqueEps = ret.steeringTorque
+    ret.steeringTorqueEps = cp.vl["ICC_STEERING"]["EPS_STEERING"]
     ret.steeringPressed = bool(ret.steeringTorqueEps > 6)
     ret.steerFaultTemporary = False
+    ret.yawRate = cp.vl["YAW_RATE"]["YAW_RATE"] * CV.DEG_TO_RAD
 
     ret.stockAeb = False
     ret.stockFcw = False
     ret.cruiseState.available = bool(cp.vl["ICC_STATE"]["ICC_ON"]) or bool(cp.vl["ICC_STATE"]["ACC_ON"])
-    ret.cruiseState.enabled = ret.cruiseState.available
+    ret.cruiseState.enabled = bool(cp.vl["ICC_STATE"]["ICC_ON"])
 
     ret.cruiseState.speedCluster = 0
     ret.cruiseState.speed = 0
@@ -68,7 +70,7 @@ class CarState(CarStateBase):
 
     ret.leftBlinker = bool(cp.vl["LIGHTS"]["LEFT_TURN"])
     ret.rightBlinker = bool(cp.vl["LIGHTS"]["RIGHT_TURN"])
-    ret.genericToggle = bool(cp.vl["LIGHTS"]["BRIGHTS"])
+    ret.genericToggle = bool(cp.vl["DRIVING_MODE_BUTTON"]["DRIVING_MODE_BUTTON_PRESSED"]) or bool(cp.vl["LIGHTS"]["BRIGHTS"])
     ret.espDisabled = False
 
     ret.leftBlindspot = False
@@ -83,11 +85,17 @@ class CarState(CarStateBase):
       ("NEW_MSG_1E2", 50),
       ("WHEEL_SPEEDS", 50),
       ("BRAKE", 50),
+      ("PEDALS", 50),
       ("SEATBELT", 20),
       ("STEER_ANGLE_SENSOR", 100),
+      ("ICC_STEERING", 50),
+      ("YAW_RATE", 50),
       ("ICC_STATE", 20),
       ("GEAR_STATE", 20),
+      ("STEERING_WHEEL_BUTTONS", 20),
       ("LIGHTS", 20),
+      ("IGNITION", 10),
+      ("DRIVING_MODE_BUTTON", 20),
     ]
 
     return {
