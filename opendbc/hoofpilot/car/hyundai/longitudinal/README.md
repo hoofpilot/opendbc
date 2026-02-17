@@ -1,6 +1,6 @@
-# **How custom longitudinal tuning works for Hyundai/Kia/Genesis vehicles in sunnypilot.**
+# **How custom longitudinal tuning works for Hyundai/Kia/Genesis vehicles in hoofpilot.**
 
-This document explains the custom longitudinal control tuning implemented in sunnypilot for Hyundai, Kia, and Genesis vehicles.
+This document explains the custom longitudinal control tuning implemented in hoofpilot for Hyundai, Kia, and Genesis vehicles.
 
 **Safety First: ISO 15622:2018**
 
