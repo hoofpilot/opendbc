@@ -5,8 +5,8 @@ from opendbc.car.common.conversions import Conversions as CV
 from opendbc.car.interfaces import CarStateBase
 from opendbc.car.gm.values import DBC, AccState, CruiseButtons, STEER_THRESHOLD, SDGM_CAR, ALT_ACCS
 
-from opendbc.sunnypilot.car.gm.carstate_ext import CarStateExt
-from opendbc.sunnypilot.car.gm.values_ext import GMFlagsSP
+from opendbc.hoofpilot.car.gm.carstate_ext import CarStateExt
+from opendbc.hoofpilot.car.gm.values_ext import GMFlagsSP
 
 ButtonType = structs.CarState.ButtonEvent.Type
 TransmissionType = structs.CarParams.TransmissionType

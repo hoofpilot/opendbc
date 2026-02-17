@@ -5,10 +5,10 @@ from opendbc.car.chrysler import chryslercan
 from opendbc.car.chrysler.values import RAM_CARS, CarControllerParams, ChryslerFlags, RAM_DT
 from opendbc.car.interfaces import CarControllerBase
 
-from opendbc.sunnypilot.car.chrysler.carcontroller_ext import CarControllerExt
-from opendbc.sunnypilot.car.chrysler.icbm import IntelligentCruiseButtonManagementInterface
-from opendbc.sunnypilot.car.chrysler.mads import MadsCarController
-from opendbc.sunnypilot.car.chrysler.values_ext import ChryslerFlagsSP
+from opendbc.hoofpilot.car.chrysler.carcontroller_ext import CarControllerExt
+from opendbc.hoofpilot.car.chrysler.icbm import IntelligentCruiseButtonManagementInterface
+from opendbc.hoofpilot.car.chrysler.mads import MadsCarController
+from opendbc.hoofpilot.car.chrysler.values_ext import ChryslerFlagsSP
 
 
 class CarController(CarControllerBase, MadsCarController, CarControllerExt, IntelligentCruiseButtonManagementInterface):

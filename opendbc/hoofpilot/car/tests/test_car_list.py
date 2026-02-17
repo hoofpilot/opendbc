@@ -1,6 +1,6 @@
 import json
 
-from opendbc.sunnypilot.car.platform_list import get_car_list, CAR_LIST_JSON_OUT
+from opendbc.hoofpilot.car.platform_list import get_car_list, CAR_LIST_JSON_OUT
 
 
 class TestCarList:

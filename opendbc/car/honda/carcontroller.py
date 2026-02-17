@@ -7,9 +7,9 @@ from opendbc.car.honda.values import CAR, CruiseButtons, HONDA_BOSCH, HONDA_BOSC
                                      HONDA_BOSCH_TJA_CONTROL, HONDA_NIDEC_ALT_PCM_ACCEL, CarControllerParams
 from opendbc.car.interfaces import CarControllerBase
 
-from opendbc.sunnypilot.car.honda.mads import MadsCarController
-from opendbc.sunnypilot.car.honda.gas_interceptor import GasInterceptorCarController
-from opendbc.sunnypilot.car.honda.icbm import IntelligentCruiseButtonManagementInterface
+from opendbc.hoofpilot.car.honda.mads import MadsCarController
+from opendbc.hoofpilot.car.honda.gas_interceptor import GasInterceptorCarController
+from opendbc.hoofpilot.car.honda.icbm import IntelligentCruiseButtonManagementInterface
 
 VisualAlert = structs.CarControl.HUDControl.VisualAlert
 LongCtrlState = structs.CarControl.Actuators.LongControlState

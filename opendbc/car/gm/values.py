@@ -6,7 +6,7 @@ from opendbc.car.structs import CarParams
 from opendbc.car.docs_definitions import CarDocs, CarFootnote, CarHarness, CarParts, Column, SupportType
 from opendbc.car.fw_query_definitions import FwQueryConfig, Request, StdQueries
 
-from opendbc.sunnypilot.car.gm.values_ext import GMFlagsSP
+from opendbc.hoofpilot.car.gm.values_ext import GMFlagsSP
 
 Ecu = CarParams.Ecu
 

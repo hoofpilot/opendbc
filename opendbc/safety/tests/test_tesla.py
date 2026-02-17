@@ -14,7 +14,7 @@ from opendbc.safety.tests.libsafety import libsafety_py
 import opendbc.safety.tests.common as common
 from opendbc.safety.tests.common import CANPackerSafety, MAX_SPEED_DELTA, MAX_WRONG_COUNTERS, away_round, round_speed
 
-from opendbc.sunnypilot.car.tesla.values import TeslaSafetyFlagsSP
+from opendbc.hoofpilot.car.tesla.values import TeslaSafetyFlagsSP
 
 MSG_DAS_steeringControl = 0x488
 MSG_APS_eacMonitor = 0x27d

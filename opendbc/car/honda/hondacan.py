@@ -2,7 +2,7 @@ from opendbc.car import CanBusBase
 from opendbc.car.common.conversions import Conversions as CV
 from opendbc.car.honda.values import (HondaFlags, HONDA_BOSCH, HONDA_BOSCH_ALT_RADAR, HONDA_BOSCH_RADARLESS,
                                       HONDA_BOSCH_CANFD, CarControllerParams)
-from opendbc.sunnypilot.car.honda.values_ext import HondaFlagsSP
+from opendbc.hoofpilot.car.honda.values_ext import HondaFlagsSP
 
 # CAN bus layout with relay
 # 0 = ACC-CAN - radar side

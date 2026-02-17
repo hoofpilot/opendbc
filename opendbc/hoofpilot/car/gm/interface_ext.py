@@ -10,7 +10,7 @@ from math import exp
 from opendbc.car import structs
 from opendbc.car.common.basedir import BASEDIR
 from opendbc.car.gm.interface import CAR
-from opendbc.sunnypilot.car.interfaces import LatControlInputs, NanoFFModel, TorqueFromLateralAccelCallbackTypeTorqueSpace
+from opendbc.hoofpilot.car.interfaces import LatControlInputs, NanoFFModel, TorqueFromLateralAccelCallbackTypeTorqueSpace
 
 NEURAL_PARAMS_PATH = os.path.join(BASEDIR, '../sunnypilot/car/torque_data/neural_ff_weights.json')
 

@@ -4,8 +4,8 @@ from opendbc.car.chrysler.values import DBC, STEER_THRESHOLD, RAM_CARS
 from opendbc.car.common.conversions import Conversions as CV
 from opendbc.car.interfaces import CarStateBase
 
-from opendbc.sunnypilot.car.chrysler.carstate_ext import CarStateExt
-from opendbc.sunnypilot.car.chrysler.mads import MadsCarState
+from opendbc.hoofpilot.car.chrysler.carstate_ext import CarStateExt
+from opendbc.hoofpilot.car.chrysler.mads import MadsCarState
 
 ButtonType = structs.CarState.ButtonEvent.Type
 

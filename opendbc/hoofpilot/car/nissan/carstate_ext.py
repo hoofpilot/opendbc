@@ -8,7 +8,7 @@ from enum import StrEnum
 
 from opendbc.car import Bus, structs
 from opendbc.can.parser import CANParser
-from opendbc.sunnypilot.car.nissan.values import BUTTONS
+from opendbc.hoofpilot.car.nissan.values import BUTTONS
 
 
 class CarStateExt:

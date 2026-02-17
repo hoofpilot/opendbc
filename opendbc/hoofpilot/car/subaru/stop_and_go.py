@@ -13,8 +13,8 @@ from opendbc.car.can_definitions import CanData
 from opendbc.car.interfaces import CarStateBase
 from opendbc.car.subaru.values import SubaruFlags
 
-from opendbc.sunnypilot.car.subaru import subarucan_ext
-from opendbc.sunnypilot.car.subaru.values_ext import SubaruFlagsSP
+from opendbc.hoofpilot.car.subaru import subarucan_ext
+from opendbc.hoofpilot.car.subaru.values_ext import SubaruFlagsSP
 from opendbc.can.parser import CANParser
 
 _SNG_ACC_MIN_DIST = 3

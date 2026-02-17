@@ -9,7 +9,7 @@ import numpy as np
 
 from opendbc.car import structs
 from opendbc.car.can_definitions import CanData
-from opendbc.sunnypilot.car import create_gas_interceptor_command
+from opendbc.hoofpilot.car import create_gas_interceptor_command
 
 
 class GasInterceptorCarController:

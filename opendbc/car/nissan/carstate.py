@@ -5,7 +5,7 @@ from opendbc.car import Bus, create_button_events, structs
 from opendbc.car.common.conversions import Conversions as CV
 from opendbc.car.interfaces import CarStateBase
 from opendbc.car.nissan.values import CAR, DBC, CarControllerParams
-from opendbc.sunnypilot.car.nissan.carstate_ext import CarStateExt
+from opendbc.hoofpilot.car.nissan.carstate_ext import CarStateExt
 
 ButtonType = structs.CarState.ButtonEvent.Type
 

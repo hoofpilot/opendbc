@@ -11,7 +11,7 @@ from opendbc.car import Bus, structs
 from opendbc.car.carlog import carlog
 from opendbc.can.parser import CANParser
 from opendbc.car.common.conversions import Conversions as CV
-from opendbc.sunnypilot.car.toyota.values import ToyotaFlagsSP
+from opendbc.hoofpilot.car.toyota.values import ToyotaFlagsSP
 
 TRAFFIC_SIGNAL_MAP = {
   1: "kph",

@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "opendbc/safety/sunnypilot/mads_declarations.h"
+#include "opendbc/safety/hoofpilot/mads_declarations.h"
 
 // ===============================
 // Global Variables

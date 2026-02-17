@@ -2,8 +2,8 @@
 """ AUTO-FORMATTED USING opendbc/car/debug/format_fingerprints.py, EDIT STRUCTURE THERE."""
 from opendbc.car.gm.values import CAR
 
-from opendbc.sunnypilot.car.fingerprints_ext import merge_fingerprints
-from opendbc.sunnypilot.car.gm.fingerprints_ext import FINGERPRINTS_EXT
+from opendbc.hoofpilot.car.fingerprints_ext import merge_fingerprints
+from opendbc.hoofpilot.car.gm.fingerprints_ext import FINGERPRINTS_EXT
 
 # Trailblazer also matches as a SILVERADO, TODO: split with fw versions
 # FIXME: There are Equinox users with different message lengths, specifically 304 and 320

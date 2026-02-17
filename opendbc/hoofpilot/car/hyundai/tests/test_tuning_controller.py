@@ -9,8 +9,8 @@ import unittest
 import numpy as np
 from unittest.mock import Mock
 
-from opendbc.sunnypilot.car.hyundai.longitudinal.controller import LongitudinalController, LongitudinalState
-from opendbc.sunnypilot.car.hyundai.values import HyundaiFlagsSP
+from opendbc.hoofpilot.car.hyundai.longitudinal.controller import LongitudinalController, LongitudinalState
+from opendbc.hoofpilot.car.hyundai.values import HyundaiFlagsSP
 from opendbc.car import DT_CTRL, structs
 from opendbc.car.interfaces import CarStateBase
 from opendbc.car.hyundai.values import HyundaiFlags

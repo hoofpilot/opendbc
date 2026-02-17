@@ -8,11 +8,11 @@ from opendbc.car.hyundai.hyundaicanfd import CanBus
 from opendbc.car.hyundai.values import HyundaiFlags, Buttons, CarControllerParams, CAR
 from opendbc.car.interfaces import CarControllerBase
 
-from opendbc.sunnypilot.car.hyundai.escc import EsccCarController
-from opendbc.sunnypilot.car.hyundai.icbm import IntelligentCruiseButtonManagementInterface
-from opendbc.sunnypilot.car.hyundai.longitudinal.controller import LongitudinalController
-from opendbc.sunnypilot.car.hyundai.lead_data_ext import LeadDataCarController
-from opendbc.sunnypilot.car.hyundai.mads import MadsCarController
+from opendbc.hoofpilot.car.hyundai.escc import EsccCarController
+from opendbc.hoofpilot.car.hyundai.icbm import IntelligentCruiseButtonManagementInterface
+from opendbc.hoofpilot.car.hyundai.longitudinal.controller import LongitudinalController
+from opendbc.hoofpilot.car.hyundai.lead_data_ext import LeadDataCarController
+from opendbc.hoofpilot.car.hyundai.mads import MadsCarController
 
 VisualAlert = structs.CarControl.HUDControl.VisualAlert
 LongCtrlState = structs.CarControl.Actuators.LongControlState

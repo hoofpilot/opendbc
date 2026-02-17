@@ -11,7 +11,7 @@ from collections import namedtuple
 from opendbc.car import Bus, structs
 from opendbc.car.chrysler.values import RAM_CARS
 
-from opendbc.sunnypilot.mads_base import MadsCarStateBase
+from opendbc.hoofpilot.mads_base import MadsCarStateBase
 from opendbc.can.parser import CANParser
 
 MadsDataSP = namedtuple("MadsDataSP",

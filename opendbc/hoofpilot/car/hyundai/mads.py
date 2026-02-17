@@ -12,8 +12,8 @@ from opendbc.car import Bus, DT_CTRL, structs
 from opendbc.car.hyundai.values import CAR
 
 from opendbc.car.hyundai.values import HyundaiFlags
-from opendbc.sunnypilot.car.hyundai.values import HyundaiFlagsSP
-from opendbc.sunnypilot.mads_base import MadsCarStateBase
+from opendbc.hoofpilot.car.hyundai.values import HyundaiFlagsSP
+from opendbc.hoofpilot.mads_base import MadsCarStateBase
 from opendbc.can.parser import CANParser
 
 ButtonType = structs.CarState.ButtonEvent.Type

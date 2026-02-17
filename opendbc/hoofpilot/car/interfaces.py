@@ -13,12 +13,12 @@ from opendbc.car import structs
 from opendbc.car.can_definitions import CanRecvCallable, CanSendCallable
 from opendbc.car.hyundai.values import HyundaiFlags
 from opendbc.car.subaru.values import SubaruFlags
-from opendbc.sunnypilot.car.hyundai.enable_radar_tracks import enable_radar_tracks as hyundai_enable_radar_tracks
-from opendbc.sunnypilot.car.hyundai.longitudinal.helpers import LongitudinalTuningType
-from opendbc.sunnypilot.car.hyundai.values import HyundaiFlagsSP
-from opendbc.sunnypilot.car.subaru.values_ext import SubaruFlagsSP, SubaruSafetyFlagsSP
-from opendbc.sunnypilot.car.tesla.values import TeslaFlagsSP
-from opendbc.sunnypilot.car.toyota.values import ToyotaFlagsSP
+from opendbc.hoofpilot.car.hyundai.enable_radar_tracks import enable_radar_tracks as hyundai_enable_radar_tracks
+from opendbc.hoofpilot.car.hyundai.longitudinal.helpers import LongitudinalTuningType
+from opendbc.hoofpilot.car.hyundai.values import HyundaiFlagsSP
+from opendbc.hoofpilot.car.subaru.values_ext import SubaruFlagsSP, SubaruSafetyFlagsSP
+from opendbc.hoofpilot.car.tesla.values import TeslaFlagsSP
+from opendbc.hoofpilot.car.toyota.values import ToyotaFlagsSP
 
 
 class LatControlInputs(NamedTuple):

@@ -6,8 +6,8 @@ from opendbc.car.interfaces import CarStateBase
 from opendbc.car.subaru.values import DBC, CanBus, SubaruFlags
 from opendbc.car import CanSignalRateCalculator
 
-from opendbc.sunnypilot.car.subaru.mads import MadsCarState
-from opendbc.sunnypilot.car.subaru.stop_and_go import SnGCarState
+from opendbc.hoofpilot.car.subaru.mads import MadsCarState
+from opendbc.hoofpilot.car.subaru.stop_and_go import SnGCarState
 
 
 class CarState(CarStateBase, MadsCarState, SnGCarState):

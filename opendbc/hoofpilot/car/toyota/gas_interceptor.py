@@ -10,7 +10,7 @@ import numpy as np
 from opendbc.car import structs
 from opendbc.car.can_definitions import CanData
 from opendbc.car.toyota.values import CAR, MIN_ACC_SPEED, PEDAL_TRANSITION
-from opendbc.sunnypilot.car import create_gas_interceptor_command
+from opendbc.hoofpilot.car import create_gas_interceptor_command
 
 
 class GasInterceptorCarController:

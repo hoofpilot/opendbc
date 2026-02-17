@@ -11,7 +11,7 @@ from opendbc.car import Bus, structs
 from opendbc.can.parser import CANParser
 from opendbc.car.common.conversions import Conversions as CV
 from opendbc.car.rivian.values import DBC
-from opendbc.sunnypilot.car.rivian.values import RivianFlagsSP
+from opendbc.hoofpilot.car.rivian.values import RivianFlagsSP
 
 ButtonType = structs.CarState.ButtonEvent.Type
 

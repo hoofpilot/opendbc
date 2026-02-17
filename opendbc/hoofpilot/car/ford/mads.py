@@ -9,7 +9,7 @@ from enum import StrEnum
 
 from opendbc.car import Bus,structs
 
-from opendbc.sunnypilot.mads_base import MadsCarStateBase
+from opendbc.hoofpilot.mads_base import MadsCarStateBase
 from opendbc.can.parser import CANParser
 
 

@@ -10,7 +10,7 @@ import opendbc.safety.tests.common as common
 from opendbc.safety.tests.common import CANPackerSafety
 from opendbc.safety.tests.hyundai_common import HyundaiButtonBase, HyundaiLongitudinalBase
 
-from opendbc.sunnypilot.car.hyundai.values import HyundaiSafetyFlagsSP
+from opendbc.hoofpilot.car.hyundai.values import HyundaiSafetyFlagsSP
 
 # LDA button availability
 LDA_BUTTON = [

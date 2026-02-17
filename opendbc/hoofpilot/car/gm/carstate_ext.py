@@ -9,7 +9,7 @@ from enum import StrEnum
 from opendbc.car import Bus, structs
 from opendbc.car.common.conversions import Conversions as CV
 from opendbc.can.parser import CANParser
-from opendbc.sunnypilot.car.gm.values_ext import GMFlagsSP
+from opendbc.hoofpilot.car.gm.values_ext import GMFlagsSP
 
 
 class CarStateExt:

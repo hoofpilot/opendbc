@@ -7,7 +7,7 @@ See the LICENSE.md file in the root directory for more details.
 from collections import namedtuple
 
 from opendbc.car import structs
-from opendbc.sunnypilot.car.tesla.values import TeslaFlagsSP
+from opendbc.hoofpilot.car.tesla.values import TeslaFlagsSP
 
 CoopSteeringDataSP = namedtuple("CoopSteeringDataSP",
                                 ["control_type"])
