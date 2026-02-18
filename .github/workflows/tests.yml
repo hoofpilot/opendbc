@@ -124,7 +124,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        repository: 'sunnypilot/sunnypilot'
+        repository: 'hoofpilot/hoofpilot'
         ref: 'master'
         submodules: true
     - run: rm -rf opendbc_repo/
