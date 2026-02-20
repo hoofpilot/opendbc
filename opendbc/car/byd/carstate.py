@@ -1,0 +1,103 @@
+import math
+from opendbc.car import Bus, structs
+from opendbc.can import CANParser, CANDefine
+from opendbc.car.common.conversions import Conversions as CV
+from opendbc.car.interfaces import CarStateBase
+from opendbc.car.byd.values import DBC, CANBUS
+
+# Multiplier between GPS ground speed to the meter cluster's displayed speed
+HUD_MULTIPLIER = 1.068
+
+
+class CarState(CarStateBase):
+  def __init__(self, CP, CP_SP):
+    super().__init__(CP, CP_SP)
+    can_define = CANDefine(DBC[CP.carFingerprint][Bus.pt])
+
+    self.shifter_values = can_define.dv["GEAR_STATE"]["GEAR_STATE"]
+
+  def update(self, can_parsers) -> tuple[structs.CarState, structs.CarStateSP]:
+    cp = can_parsers[Bus.pt]
+    ret = structs.CarState()
+    ret_sp = structs.CarStateSP()
+
+    ret.wheelSpeeds.fl = cp.vl["WHEEL_SPEEDS"]["WHEEL_FL"] * CV.KPH_TO_MS
+    ret.wheelSpeeds.fr = cp.vl["WHEEL_SPEEDS"]["WHEEL_FR"] * CV.KPH_TO_MS
+    ret.wheelSpeeds.rl = cp.vl["WHEEL_SPEEDS"]["WHEEL_RL"] * CV.KPH_TO_MS
+    ret.wheelSpeeds.rr = cp.vl["WHEEL_SPEEDS"]["WHEEL_RR"] * CV.KPH_TO_MS
+    ret.vEgoRaw = (ret.wheelSpeeds.rl + ret.wheelSpeeds.fl) / 2.0
+
+    # unfiltered speed from CAN sensors
+    ret.vEgo, ret.aEgo = self.update_speed_kf(ret.vEgoRaw)
+    ret.vEgoCluster = ret.vEgo * HUD_MULTIPLIER
+    ret.standstill = ret.vEgoRaw < 0.01
+
+    # safety checks to engage
+    can_gear = int(cp.vl["GEAR_STATE"]["GEAR_STATE"])
+    ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(can_gear, None))
+
+    ret.doorOpen = any([cp.vl["SEATBELT"]["DOOR_RL_OPEN"],
+                       cp.vl["SEATBELT"]["DOOR_FL_OPEN"],
+                       cp.vl["SEATBELT"]["DOOR_RR_OPEN"],
+                       cp.vl["SEATBELT"]["DOOR_FR_OPEN"]])
+
+    ret.seatbeltUnlatched = cp.vl["SEATBELT"]["SEATBELT_DRIVER_LATCHED"] == 0
+
+    # Gas position isn't in this DBC snapshot.
+    ret.gasPressed = False
+
+    ret.brakePressed = bool(cp.vl["BRAKE"]["BRAKE_PRESSED"])
+    ret.brake = cp.vl["BRAKE_POSITION"]["BRAKE_POSITION"] / 512.0
+
+    # steer
+    ret.steeringAngleDeg = cp.vl["STEER_ANGLE_SENSOR"]["STEER_RACK_ANGLE"]
+    ret.steeringAngleOffsetDeg = 0
+    ret.steeringTorque = cp.vl["STEER_ANGLE_SENSOR"]["STEER_TORQUE_MAG"]
+    ret.steeringTorqueEps = ret.steeringTorque
+    ret.steeringPressed = bool(ret.steeringTorqueEps > 6)
+    ret.steerFaultTemporary = False
+
+    ret.stockAeb = False
+    ret.stockFcw = False
+
+    # Cruise detection - ICC/ACC active states (not just button)
+    icc_active = bool(cp.vl["ICC_STEERING"]["ICC_STEERING_STATE"])
+    acc_on = bool(cp.vl["ICC_STATE"]["ACC_ON"])
+    icc_on = bool(cp.vl["ICC_STATE"]["ICC_ON"])
+    
+    # Openpilot takes over when factory ICC/ACC is active
+    ret.cruiseState.available = icc_active or acc_on or icc_on
+    ret.cruiseState.enabled = ret.cruiseState.available
+
+    ret.cruiseState.speedCluster = 0
+    ret.cruiseState.speed = 0
+    ret.cruiseState.standstill = ret.standstill
+    ret.cruiseState.nonAdaptive = False
+
+    ret.leftBlinker = False
+    ret.rightBlinker = False
+    ret.genericToggle = False
+    ret.espDisabled = False
+
+    ret.leftBlindspot = False
+    ret.rightBlindspot = False
+
+    return ret, ret_sp
+
+  @staticmethod
+  def get_can_parsers(CP, CP_SP):
+    pt_signals = [
+      ("BRAKE_POSITION", 50),
+      ("WHEEL_SPEEDS", 50),
+      ("BRAKE", 50),
+      ("SEATBELT", 20),
+      ("STEER_ANGLE_SENSOR", 100),
+      ("GEAR_STATE", 20),
+      ("STEERING_WHEEL_BUTTONS", 20),
+      ("ICC_STEERING", math.nan),
+      ("ICC_STATE", math.nan),
+    ]
+
+    return {
+      Bus.pt: CANParser(DBC[CP.carFingerprint][Bus.pt], pt_signals, CANBUS.main_bus),
+    }
