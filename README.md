@@ -138,7 +138,7 @@ The above tests are themselves tested by:
 * a [mutation test](opendbc/safety/tests/misra/test_mutation.py) on the MISRA coverage
 * 100% line coverage enforced on the safety unit tests
 
-In addition, we run the [ruff linter](https://github.com/astral-sh/ruff) and [mypy](https://mypy-lang.org/) on the car interface library.
+In addition, we run the [ruff linter](https://github.com/astral-sh/ruff) and [ty](https://github.com/astral-sh/ty) on the car interface library.
 
 ### Bounties
 
@@ -190,7 +190,3 @@ In addition to the standard bounties, we also offer higher value bounties for mo
 * [can_print_changes.py](https://github.com/commaai/openpilot/blob/master/selfdrive/debug/can_print_changes.py): diff the whole CAN bus across two drives, such as one without any LKAS and one with LKAS
 * [longitudinal maneuvers](https://github.com/commaai/openpilot/tree/master/tools/longitudinal_maneuvers): a tool for evaluating and tuning longitudinal control
 * [opendbc data](https://commaai.github.io/opendbc-data/): a repository of longitudinal maneuver evaluations
-
-## Come work with us -- [comma.ai/jobs](https://comma.ai/jobs)
-
-comma is hiring engineers to work on opendbc and [openpilot](https://github.com/commaai/openpilot). We love hiring contributors.
