@@ -51,6 +51,8 @@ BO_ 661 NEW_MSG_295: 8 XXX
 BO_ 790 ICC_STATE: 8 XXX
  SG_ ACC_ON : 27|1@0+ (1,0) [0|1] "" XXX
  SG_ ICC_ON : 28|1@0+ (1,0) [0|1] "" XXX
+ SG_ LeftLane : 4|2@1+ (1,0) [0|3] "" XXX
+ SG_ RightLane : 34|2@1+ (1,0) [0|3] "" XXX
  SG_ NEW_SIGNAL_1 : 55|4@0+ (1,0) [0|15] "" XXX
  SG_ NEW_SIGNAL_2 : 63|4@0+ (1,0) [0|15] "" XXX
 
@@ -84,6 +86,7 @@ BO_ 944 STEERING_WHEEL_BUTTONS: 8 XXX
 
 BO_ 1028 IGNITION: 8 XXX
  SG_ IGNITION_ON : 6|1@0+ (1,0) [0|1] "" XXX
+ SG_ COUNTER_ignition : 60|4@1+ (1,0) [0|15] "" XXX
 
 BO_ 1033 NEW_MSG_409: 8 XXX
 
