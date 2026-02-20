@@ -17,6 +17,7 @@ class CarState(CarStateBase):
 
   def update(self, can_parsers) -> tuple[structs.CarState, structs.CarStateSP]:
     cp = can_parsers[Bus.pt]
+    cp_adas = can_parsers[Bus.adas]
     ret = structs.CarState()
     ret_sp = structs.CarStateSP()
 
@@ -47,9 +48,9 @@ class CarState(CarStateBase):
     ret.brakePressed = bool(cp.vl["BRAKE"]["BRAKE_PRESSED"]) or bool(cp.vl["PEDALS"]["BRAKE_PRESSED"])
     ret.brake = max(cp.vl["BRAKE_POSITION"]["BRAKE_POSITION"] / 511.0, 1.0 if ret.brakePressed else 0.0)
 
-    # steer
+    # steer — main angle from bus 0; offset uses bus 2 column angle
     ret.steeringAngleDeg = cp.vl["STEER_ANGLE_SENSOR"]["STEER_RACK_ANGLE"]
-    ret.steeringAngleOffsetDeg = cp.vl["NEW_MSG_1E2"]["STEER_ANGLE_2"] - ret.steeringAngleDeg
+    ret.steeringAngleOffsetDeg = cp_adas.vl["NEW_MSG_1E2"]["STEER_ANGLE_2"] - ret.steeringAngleDeg
     ret.steeringTorque = cp.vl["STEER_ANGLE_SENSOR"]["STEER_TORQUE_MAG"]
     ret.steeringTorqueEps = cp.vl["ICC_STEERING"]["EPS_STEERING"]
     ret.steeringPressed = bool(ret.steeringTorqueEps > 6)
@@ -58,8 +59,10 @@ class CarState(CarStateBase):
 
     ret.stockAeb = False
     ret.stockFcw = False
-    ret.cruiseState.available = bool(cp.vl["ICC_STATE"]["ICC_ON"]) or bool(cp.vl["ICC_STATE"]["ACC_ON"])
-    ret.cruiseState.enabled = bool(cp.vl["ICC_STATE"]["ICC_ON"])
+
+    # cruise state is on bus 2 (ADAS gateway)
+    ret.cruiseState.available = bool(cp_adas.vl["ICC_STATE"]["ICC_ON"]) or bool(cp_adas.vl["ICC_STATE"]["ACC_ON"])
+    ret.cruiseState.enabled = bool(cp_adas.vl["ICC_STATE"]["ICC_ON"])
 
     ret.cruiseState.speedCluster = 0
     ret.cruiseState.speed = 0
@@ -68,7 +71,7 @@ class CarState(CarStateBase):
 
     ret.leftBlinker = bool(cp.vl["LIGHTS"]["LEFT_TURN"])
     ret.rightBlinker = bool(cp.vl["LIGHTS"]["RIGHT_TURN"])
-    ret.genericToggle = bool(cp.vl["DRIVING_MODE_BUTTON"]["DRIVING_MODE_BUTTON_PRESSED"]) or bool(cp.vl["LIGHTS"]["BRIGHTS"])
+    ret.genericToggle = bool(cp.vl["LIGHTS"]["BRIGHTS"])
     ret.espDisabled = False
 
     ret.leftBlindspot = False
@@ -80,7 +83,6 @@ class CarState(CarStateBase):
   def get_can_parsers(CP, CP_SP):
     pt_signals = [
       ("BRAKE_POSITION", 50),
-      ("NEW_MSG_1E2", 50),
       ("WHEEL_SPEEDS", 50),
       ("BRAKE", 50),
       ("PEDALS", 50),
@@ -88,14 +90,18 @@ class CarState(CarStateBase):
       ("STEER_ANGLE_SENSOR", 100),
       ("ICC_STEERING", 50),
       ("YAW_RATE", 50),
-      ("ICC_STATE", 20),
       ("GEAR_STATE", 20),
       ("STEERING_WHEEL_BUTTONS", 20),
       ("LIGHTS", 20),
       ("IGNITION", 10),
-      ("DRIVING_MODE_BUTTON", 20),
+    ]
+
+    adas_signals = [
+      ("ICC_STATE", 20),
+      ("NEW_MSG_1E2", 50),
     ]
 
     return {
       Bus.pt: CANParser(DBC[CP.carFingerprint][Bus.pt], pt_signals, CANBUS.main_bus),
+      Bus.adas: CANParser(DBC[CP.carFingerprint][Bus.adas], adas_signals, CANBUS.adas_bus),
     }

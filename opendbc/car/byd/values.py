@@ -9,9 +9,10 @@ Ecu = CarParams.Ecu
 
 class CANBUS:
   main_bus = 0
+  adas_bus = 2
 
 def dbc_dict(pt):
-  return {Bus.pt: pt}
+  return {Bus.pt: pt, Bus.adas: pt}
 
 class BydSafetyFlags(IntFlag):
   LONG_CONTROL = 1
