@@ -42,12 +42,10 @@ class CarState(CarStateBase):
 
     ret.seatbeltUnlatched = cp.vl["SEATBELT"]["SEATBELT_DRIVER_LATCHED"] == 0
 
-    ret.gas = cp.vl["PEDALS"]["GAS_PEDAL"] / 127.0
-    ret.gasPressed = ret.gas > 1e-3
+    ret.gasPressed = cp.vl["PEDALS"]["GAS_PEDAL"] > 0
 
     ret.brakePressed = bool(cp.vl["BRAKE"]["BRAKE_PRESSED"]) or bool(cp.vl["PEDALS"]["BRAKE_PRESSED"])
     ret.brake = max(cp.vl["BRAKE_POSITION"]["BRAKE_POSITION"] / 511.0, 1.0 if ret.brakePressed else 0.0)
-    ret.brakeLights = bool(cp.vl["LIGHTS"]["BRAKE_LIGHT"])
 
     # steer
     ret.steeringAngleDeg = cp.vl["STEER_ANGLE_SENSOR"]["STEER_RACK_ANGLE"]
