@@ -32,7 +32,6 @@
 |Audi|Q5 2017-24|All|[Not compatible](#flexray)|
 |Audi|RS3 2018|Adaptive Cruise Control (ACC) & Lane Assist|[Upstream](#upstream)|
 |Audi|S3 2015-17|Adaptive Cruise Control (ACC) & Lane Assist|[Upstream](#upstream)|
-|BYD|Sealion 2024|All|[Upstream](#upstream)|
 |Cadillac|CT6 Non-ACC 2017-18|No Adaptive Cruise Control (Non-ACC)|[Dashcam mode](#dashcam)|
 |Cadillac|XT5 Non-ACC 2018|No Adaptive Cruise Control (Non-ACC)|[Dashcam mode](#dashcam)|
 |Chevrolet|Bolt EUV 2022-23|Premier or Premier Redline Trim, without Super Cruise Package|[Upstream](#upstream)|
